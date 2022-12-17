@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 fn main() {
-    println!(
+    print!(
         "{}",
         include_bytes!("input.txt")
             .windows(14)
