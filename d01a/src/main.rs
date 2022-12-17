@@ -1,5 +1,5 @@
 fn main() {
-    println!(
+    print!(
         "{}",
         include_str!("input.txt")
             .split("\n\n")

@@ -12,7 +12,7 @@ fn contains(pair: &str) -> bool {
 }
 
 fn main() {
-    println!(
+    print!(
         "{}",
         include_str!("input.txt")
             .lines()

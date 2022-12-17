@@ -13,7 +13,7 @@ fn intersection(group: &[&str]) -> Option<char> {
 }
 
 fn main() {
-    println!(
+    print!(
         "{:?}",
         include_str!("input.txt")
             .lines()

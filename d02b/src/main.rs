@@ -32,7 +32,7 @@ fn score(game: &str) -> u8 {
 }
 
 fn main() {
-    println!(
+    print!(
         "{}",
         include_str!("input.txt")
             .lines()

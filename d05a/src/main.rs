@@ -62,5 +62,5 @@ fn main() {
 
     execute_instructions(&mut stacks, instructions);
 
-    println!("{}", get_tops(&stacks));
+    print!("{}", get_tops(&stacks));
 }
