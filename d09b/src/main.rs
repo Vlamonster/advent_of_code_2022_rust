@@ -10,16 +10,14 @@ enum Motion {
 
 #[derive(Debug)]
 struct Rope {
-    head: (isize, isize),
-    tail: (isize, isize),
+    knots: Vec<(isize, isize)>,
     visited: HashSet<(isize, isize)>,
 }
 
 impl Rope {
     pub fn new() -> Self {
         Rope {
-            head: (0, 0),
-            tail: (0, 0),
+            knots: vec![(0, 0); 10],
             visited: HashSet::from_iter([(0, 0)]),
         }
     }
@@ -28,41 +26,51 @@ impl Rope {
         match motion {
             Up(steps) => {
                 for _ in 0..steps {
-                    self.head.1 += 1;
-                    self.move_tail();
+                    self.knots[0].1 += 1;
+                    for tail_knot in 1..10 {
+                        self.move_tail(tail_knot);
+                    }
+                    self.visited.insert(self.knots[9]);
                 }
             }
             Down(steps) => {
                 for _ in 0..steps {
-                    self.head.1 -= 1;
-                    self.move_tail();
+                    self.knots[0].1 -= 1;
+                    for tail_knot in 1..10 {
+                        self.move_tail(tail_knot);
+                    }
+                    self.visited.insert(self.knots[9]);
                 }
             }
             Left(steps) => {
                 for _ in 0..steps {
-                    self.head.0 -= 1;
-                    self.move_tail();
+                    self.knots[0].0 -= 1;
+                    for tail_knot in 1..10 {
+                        self.move_tail(tail_knot);
+                    }
+                    self.visited.insert(self.knots[9]);
                 }
             }
             Right(steps) => {
                 for _ in 0..steps {
-                    self.head.0 += 1;
-                    self.move_tail();
+                    self.knots[0].0 += 1;
+                    for tail_knot in 1..10 {
+                        self.move_tail(tail_knot);
+                    }
+                    self.visited.insert(self.knots[9]);
                 }
             }
         }
     }
 
-    fn move_tail(&mut self) {
-        let x_diff = self.head.0 - self.tail.0;
-        let y_diff = self.head.1 - self.tail.1;
+    fn move_tail(&mut self, knot: usize) {
+        let x_diff = self.knots[knot - 1].0 - self.knots[knot].0;
+        let y_diff = self.knots[knot - 1].1 - self.knots[knot].1;
 
         if y_diff.abs() >= 2 || x_diff.abs() >= 2 {
-            self.tail.0 += x_diff.signum();
-            self.tail.1 += y_diff.signum();
+            self.knots[knot].0 += x_diff.signum();
+            self.knots[knot].1 += y_diff.signum();
         }
-
-        self.visited.insert(self.tail);
     }
 }
 
