@@ -32,10 +32,10 @@ impl Directory {
     pub fn size(&self) -> usize {
         self.files.iter().map(|file| file.size).sum::<usize>()
             + self
-            .directories
-            .iter()
-            .map(|directory| directory.borrow().size())
-            .sum::<usize>()
+                .directories
+                .iter()
+                .map(|directory| directory.borrow().size())
+                .sum::<usize>()
     }
 }
 
