@@ -1,42 +1,20 @@
-fn score(game: &str) -> u8 {
-    let opponent = game.chars().nth(0).unwrap();
-    let you = game.chars().nth(2).unwrap();
-
-    match you {
-        'X' => {
-            1 + match opponent {
-                'A' => 3,
-                'B' => 0,
-                'C' => 6,
-                _ => unreachable!(),
-            }
-        }
-        'Y' => {
-            2 + match opponent {
-                'A' => 6,
-                'B' => 3,
-                'C' => 0,
-                _ => unreachable!(),
-            }
-        }
-        'Z' => {
-            3 + match opponent {
-                'A' => 0,
-                'B' => 6,
-                'C' => 3,
-                _ => unreachable!(),
-            }
-        }
-        _ => unreachable!(),
-    }
-}
-
 fn main() {
     print!(
         "{}",
         include_str!("input.txt")
             .lines()
-            .map(|game| score(game) as usize)
+            .map(|game| match game.split_once(' ').unwrap() {
+                ("A", "X") => 1 + 3,
+                ("A", "Y") => 2 + 6,
+                ("A", "Z") => 3 + 0,
+                ("B", "X") => 1 + 0,
+                ("B", "Y") => 2 + 3,
+                ("B", "Z") => 3 + 6,
+                ("C", "X") => 1 + 6,
+                ("C", "Y") => 2 + 0,
+                ("C", "Z") => 3 + 3,
+                _ => unreachable!(),
+            })
             .sum::<usize>()
     );
 }
