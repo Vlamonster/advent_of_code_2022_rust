@@ -118,5 +118,8 @@ fn main() {
         .map(|monkey| monkey.inspections)
         .collect::<Vec<_>>();
     inspections.sort();
-    print!("{}", inspections.pop().unwrap() * inspections.pop().unwrap());
+    print!(
+        "{}",
+        inspections.pop().unwrap() * inspections.pop().unwrap()
+    );
 }
