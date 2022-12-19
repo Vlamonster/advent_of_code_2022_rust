@@ -109,14 +109,12 @@ fn init_graph() -> Graph {
 fn main() {
     let graph = init_graph();
     let mut paths: BTreeMap<(usize, usize), Option<Vec<(usize, usize)>>> = BTreeMap::new();
-    let mut visited = BTreeSet::new();
     let mut unvisited = BTreeSet::new();
     unvisited.insert(graph.start);
     paths.insert(graph.start, Some(vec![]));
 
     while !unvisited.is_empty() {
         let current_node = unvisited.pop_first().unwrap();
-        visited.insert(current_node);
         for neighbor in graph.edges.get(&current_node).unwrap() {
             match paths.get(neighbor) {
                 None => {
