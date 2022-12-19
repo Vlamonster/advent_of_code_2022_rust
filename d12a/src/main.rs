@@ -137,8 +137,5 @@ fn main() {
         }
     }
 
-    print!(
-        "{}",
-        paths.get(&graph.end).unwrap().clone().unwrap().len()
-    );
+    print!("{}", paths.get(&graph.end).unwrap().clone().unwrap().len());
 }
