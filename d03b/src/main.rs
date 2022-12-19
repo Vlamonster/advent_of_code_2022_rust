@@ -1,25 +1,20 @@
-fn priority(item: char) -> u8 {
-    if item.is_ascii_lowercase() {
-        item as u8 - b'a' + 1
-    } else {
-        item as u8 - b'A' + 27
-    }
-}
-
-fn intersection(group: &[&str]) -> Option<char> {
-    group[0]
-        .chars()
-        .find(|&item| group[1].contains(item) && group[2].contains(item))
-}
+use itertools::Itertools;
 
 fn main() {
     print!(
         "{:?}",
         include_str!("input.txt")
             .lines()
-            .collect::<Vec<&str>>()
-            .chunks(3)
-            .map(|group| priority(intersection(group).unwrap()) as usize)
+            .tuples::<(&str, &str, &str)>()
+            .map(|(elf_1, elf_2, elf_3)| elf_1
+                .chars()
+                .find(|item| elf_2.contains(*item) && elf_3.contains(*item))
+                .unwrap())
+            .map(|badge| match badge {
+                'a'..='z' => badge as usize - b'a' as usize + 1,
+                'A'..='Z' => badge as usize - b'A' as usize + 27,
+                _ => unreachable!(),
+            })
             .sum::<usize>()
     );
 }
