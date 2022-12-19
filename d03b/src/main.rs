@@ -5,7 +5,7 @@ fn main() {
         "{:?}",
         include_str!("input.txt")
             .lines()
-            .tuples::<(&str, &str, &str)>()
+            .tuples::<(_, _, _)>()
             .map(|(elf_1, elf_2, elf_3)| elf_1
                 .chars()
                 .find(|item| elf_2.contains(*item) && elf_3.contains(*item))
