@@ -3,9 +3,9 @@ fn main() {
         "{}",
         include_str!("input.txt")
             .split("\n\n")
-            .map(|cal_per_elf| cal_per_elf
+            .map(|elf| elf
                 .lines()
-                .map(|cal_per_item| cal_per_item.parse::<usize>().unwrap())
+                .map(|calories| calories.parse::<usize>().unwrap())
                 .sum::<usize>())
             .max()
             .unwrap()

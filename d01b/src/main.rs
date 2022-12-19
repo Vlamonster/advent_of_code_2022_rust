@@ -1,12 +1,17 @@
+use itertools::Itertools;
+
 fn main() {
-    let mut cal_per_elf = include_str!("input.txt")
-        .split("\n\n")
-        .map(|x| {
-            x.lines()
-                .map(|y| y.parse::<usize>().unwrap())
-                .sum::<usize>()
-        })
-        .collect::<Vec<usize>>();
-    cal_per_elf.sort();
-    print!("{}", cal_per_elf.into_iter().rev().take(3).sum::<usize>());
+    print!(
+        "{}",
+        include_str!("input.txt")
+            .split("\n\n")
+            .map(|elf| elf
+                .lines()
+                .map(|calories| calories.parse::<usize>().unwrap())
+                .sum::<usize>())
+            .sorted()
+            .rev()
+            .take(3)
+            .sum::<usize>()
+    );
 }
