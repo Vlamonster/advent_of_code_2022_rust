@@ -1,107 +1,40 @@
-use std::cell::RefCell;
-use std::rc::Rc;
-
-struct File {
-    name: String,
-    size: usize,
-}
-
-struct Directory {
-    name: String,
-    parent: Option<Rc<RefCell<Directory>>>,
-    directories: Vec<Rc<RefCell<Directory>>>,
-    files: Vec<File>,
-}
-
-impl File {
-    pub fn new(name: String, size: usize) -> Self {
-        File { name, size }
-    }
-}
-
-impl Directory {
-    pub fn new(name: String) -> Self {
-        Directory {
-            name,
-            parent: None,
-            directories: vec![],
-            files: vec![],
-        }
-    }
-
-    pub fn size(&self) -> usize {
-        self.files.iter().map(|file| file.size).sum::<usize>()
-            + self
-                .directories
-                .iter()
-                .map(|directory| directory.borrow().size())
-                .sum::<usize>()
-    }
-}
+use itertools::Itertools;
+use std::collections::HashMap;
+use std::path::PathBuf;
 
 fn main() {
-    let root = Rc::new(RefCell::new(Directory::new("/".into())));
-    let mut file_system = Vec::new();
-    let mut current_directory = Rc::clone(&root);
-    file_system.push(Rc::clone(&root));
+    let mut file_system = HashMap::new();
+    let mut current_path = PathBuf::from("/");
+    file_system.insert(current_path.clone(), 0usize);
 
-    'outer: for line in include_str!("input.txt").lines() {
-        match line {
-            "$ cd .." => {
-                let current_clone = Rc::clone(&current_directory);
-                current_directory = Rc::clone(current_clone.borrow().parent.as_ref().unwrap());
+    for terminal_line in include_str!("input.txt").lines() {
+        match terminal_line.split_whitespace().collect_vec().as_slice() {
+            ["$", "cd", "/"] => {
+                current_path.push("/");
             }
-            "$ cd /" => {
-                current_directory = Rc::clone(&root);
+            ["$", "cd", ".."] => {
+                current_path.pop();
             }
-            "$ ls" => {
-                // do nothing
+            ["$", "cd", path] => {
+                current_path.push(path);
+                file_system.insert(current_path.clone(), 0);
             }
-            _ if &line[0..4] == "$ cd" => {
-                let current_clone = Rc::clone(&current_directory);
-                for directory in &current_clone.borrow().directories {
-                    if directory.borrow().name == line[5..] {
-                        directory.borrow_mut().parent = Some(Rc::clone(&current_directory));
-                        current_directory = Rc::clone(directory);
-                    }
+            ["dir", _] => {}
+            ["$", "ls"] => {}
+            [file_size, _] => {
+                for path in current_path.ancestors() {
+                    *file_system.get_mut(path).unwrap() += file_size.parse::<usize>().unwrap();
                 }
             }
-            _ if &line[0..3] == "dir" => {
-                for directory in &current_directory.borrow().directories {
-                    if directory.borrow().name == line[4..] {
-                        continue 'outer;
-                    }
-                }
-                let new_directory = Rc::new(RefCell::new(Directory::new((&line[4..]).into())));
-                current_directory
-                    .borrow_mut()
-                    .directories
-                    .push(Rc::clone(&new_directory));
-                file_system.push(Rc::clone(&new_directory));
-            }
-            _ => {
-                let (file_size, file_name) = line.split_once(' ').unwrap();
-                let file_size = file_size.parse::<usize>().unwrap();
-                let current_clone = Rc::clone(&current_directory);
-                for file in &current_clone.borrow().files {
-                    if file.name == file_name {
-                        continue 'outer;
-                    }
-                }
-                current_directory
-                    .borrow_mut()
-                    .files
-                    .push(File::new(file_name.into(), file_size));
-            }
-        }
+            _ => {}
+        };
     }
 
     print!(
         "{}",
         file_system
-            .iter()
-            .map(|directory| directory.borrow().size())
-            .filter(|directory_size| *directory_size < 100000)
+            .values()
+            .filter(|size| **size < 100000)
             .sum::<usize>()
     );
 }
