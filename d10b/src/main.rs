@@ -1,26 +1,24 @@
 fn main() {
-    let mut register_x_trace: Vec<isize> = vec![0; 2];
-    let mut register_x = 1;
+    let mut x_trace = vec![0; 1];
+    let mut x = 1;
 
     for instruction in include_str!("input.txt").lines() {
         if instruction == "noop" {
-            register_x_trace.push(register_x);
+            x_trace.push(x);
         } else {
             let (_, operand) = instruction.split_once(' ').unwrap();
-            register_x_trace.push(register_x);
-            register_x += operand.parse::<isize>().unwrap();
-            register_x_trace.push(register_x);
+            x_trace.push(x);
+            x_trace.push(x);
+            x += operand.parse::<isize>().unwrap();
         }
     }
 
-    // Might be difficult to read. My solution reads "REHPRLUB".
     for y in 0..6 {
-        for x in 0..40 {
-            let cycle: isize = y * 40 + x;
-            if (x - 2..=x).contains(&register_x_trace[cycle as usize]) {
-                print!("#");
+        for x in 1..=40 {
+            if (x - 2..=x).contains(&x_trace[y * 40 + x as usize]) {
+                print!("█");
             } else {
-                print!(".");
+                print!(" ");
             }
         }
         println!();
