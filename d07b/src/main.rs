@@ -35,7 +35,7 @@ fn main() {
                     }
                 }
             }
-            _ => {}
+            _ => unreachable!(),
         };
     }
 
