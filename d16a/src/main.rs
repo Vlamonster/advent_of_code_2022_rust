@@ -29,6 +29,7 @@ fn main() {
 
     let mut unvisited_paths = vec![(vec!["AA"], 30, 0)];
     let mut visited_paths = HashMap::new();
+    let mut best_heads = HashMap::new();
 
     while let Some((path, steps, total)) = unvisited_paths.pop() {
         visited_paths.insert(path.clone(), total);
@@ -56,12 +57,12 @@ fn main() {
                         let mut unvisited_path = path.clone();
                         unvisited_path.push(neighbor);
                         let (_, rate) = rooms.get(neighbor).unwrap();
-                        if *rate > 0 {
-                            unvisited_paths.push((
-                                unvisited_path,
-                                steps_inner - 2,
-                                total + rate * (steps_inner - 2),
-                            ))
+                        let new_total = total + rate * (steps_inner - 2);
+                        if *rate > 0
+                            && new_total >= *best_heads.get(&(neighbor, steps_inner)).unwrap_or(&0)
+                        {
+                            best_heads.insert((neighbor, steps_inner), new_total);
+                            unvisited_paths.push((unvisited_path, steps_inner - 2, new_total))
                         }
                     }
                 }
