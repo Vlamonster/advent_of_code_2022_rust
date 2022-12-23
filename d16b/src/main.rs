@@ -62,7 +62,7 @@ fn main() {
 
     let mut max_flow = 0;
 
-    for k in 0..shortest_paths.len() {
+    for k in 1..=shortest_paths.len() / 2 {
         for santa_set in shortest_paths.keys().combinations(k) {
             let mut unvisited = vec![(vec!["AA"], 0, 26)];
             let mut best_heads = HashMap::new();
