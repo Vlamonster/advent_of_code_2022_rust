@@ -2,73 +2,88 @@ use itertools::Itertools;
 use regex::Regex;
 use std::collections::{HashMap, HashSet, VecDeque};
 
+fn breadth_first_search<'a>(
+    node: &'a str,
+    rooms: &HashMap<&str, (usize, Vec<&'a str>)>,
+    shortest_paths: &mut HashMap<&'a str, Vec<(&'a str, usize)>>,
+) {
+    let mut unvisited = VecDeque::from([(node, 0)]);
+    let mut visited = HashSet::new();
+
+    while let Some((child, steps)) = unvisited.pop_front() {
+        for &neighbor in &rooms.get(child).unwrap().1 {
+            if visited.contains(neighbor) {
+                continue;
+            }
+
+            visited.insert(neighbor);
+            unvisited.push_back((neighbor, steps + 1));
+
+            if rooms.get(neighbor).unwrap().0 > 0 {
+                shortest_paths
+                    .get_mut(node)
+                    .unwrap()
+                    .push((neighbor, steps + 2));
+            }
+        }
+    }
+}
+
 fn main() {
     let mut rooms = HashMap::new();
 
     let valve_regex = Regex::new(r"[A-Z]{2}").unwrap();
-    let rate_regex = Regex::new(r"\d+").unwrap();
+    let flow_regex = Regex::new(r"\d+").unwrap();
 
-    for room in include_str!("input.txt").lines() {
-        let valve = valve_regex.find(room).unwrap().as_str();
-
-        let tunnels = valve_regex
-            .find_iter(room)
-            .skip(1)
+    for line in include_str!("input.txt").lines() {
+        let valves = valve_regex
+            .find_iter(line)
             .map(|valve| valve.as_str())
             .collect_vec();
 
-        let rate = rate_regex
-            .find(room)
+        let flow = flow_regex
+            .find(line)
             .unwrap()
             .as_str()
             .parse::<usize>()
             .unwrap();
 
-        rooms.insert(valve, (tunnels, rate));
+        rooms.insert(valves[0], (flow, valves[1..].to_vec()));
     }
 
-    let mut unvisited_paths = vec![(vec!["AA"], 30, 0)];
-    let mut visited_paths = HashMap::new();
-    let mut best_heads = HashMap::new();
+    let mut shortest_paths = HashMap::new();
 
-    while let Some((path, steps, total)) = unvisited_paths.pop() {
-        visited_paths.insert(path.clone(), total);
-
-        if steps <= 1 {
-            continue;
+    for (&node, (flow, _)) in &rooms {
+        if node == "AA" || *flow > 0 {
+            shortest_paths.insert(node, vec![]);
+            breadth_first_search(node, &rooms, &mut shortest_paths);
         }
+    }
 
-        let mut unvisited_rooms = VecDeque::from([(path.last().unwrap(), steps)]);
-        let mut visited_rooms = HashSet::new();
+    let mut unvisited = vec![(vec!["AA"], 0, 30)];
+    let mut best_heads = HashMap::new();
+    let mut max_flow = 0;
 
-        while let Some((unvisited_room, steps_inner)) = unvisited_rooms.pop_front() {
-            if steps_inner <= 2 {
+    while let Some((mut path, total, steps)) = unvisited.pop() {
+        for &(node, distance) in shortest_paths.get(path.last().unwrap()).unwrap() {
+            if distance >= steps {
                 break;
             }
+            if path.contains(&node) {
+                continue;
+            }
 
-            let (neighbors, _) = rooms.get(unvisited_room).unwrap();
-            visited_rooms.insert(unvisited_room);
+            let flow = total + rooms.get(node).unwrap().0 * (steps - distance);
+            max_flow = max_flow.max(flow);
 
-            for neighbor in neighbors {
-                if !visited_rooms.contains(neighbor) {
-                    unvisited_rooms.push_back((neighbor, steps_inner - 1));
-
-                    if !path.contains(neighbor) {
-                        let mut unvisited_path = path.clone();
-                        unvisited_path.push(neighbor);
-                        let (_, rate) = rooms.get(neighbor).unwrap();
-                        let new_total = total + rate * (steps_inner - 2);
-                        if *rate > 0
-                            && new_total >= *best_heads.get(&(neighbor, steps_inner)).unwrap_or(&0)
-                        {
-                            best_heads.insert((neighbor, steps_inner), new_total);
-                            unvisited_paths.push((unvisited_path, steps_inner - 2, new_total))
-                        }
-                    }
-                }
+            if steps - distance >= 3 && flow > *best_heads.get(&(node, steps)).unwrap_or(&0) {
+                path.push(node);
+                unvisited.push((path.clone(), flow, steps - distance));
+                path.pop();
+                best_heads.insert((node, steps - distance), flow);
             }
         }
     }
 
-    print!("{:?}", visited_paths.values().max().unwrap());
+    print!("{}", max_flow);
 }
