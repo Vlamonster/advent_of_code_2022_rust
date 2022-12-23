@@ -119,8 +119,5 @@ fn main() {
             max_flow = max_flow.max(santa_flow + elephant_flow);
         }
     }
-
-    // let excluded = vec!["BB", "CC", "DD", "EE", "HH"];
-
     print!("{}", max_flow);
 }
