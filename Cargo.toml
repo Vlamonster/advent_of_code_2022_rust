@@ -1,42 +1,19 @@
-[workspace]
+[package]
+name = "advent_of_code_2022_rust"
+version = "0.1.0"
+edition = "2021"
 
-members = [
-    "d01a",
-    "d01b",
-    "d02a",
-    "d02b",
-    "d03a",
-    "d03b",
-    "d04a",
-    "d04b",
-    "d05a",
-    "d05b",
-    "d06a",
-    "d06b",
-    "d07a",
-    "d07b",
-    "d08a",
-    "d08b",
-    "d09a",
-    "d09b",
-    "d10a",
-    "d10b",
-    "d11a",
-    "d11b",
-    "d12a",
-    "d12b",
-    "d13a",
-    "d13b",
-    "d14a",
-    "d14b",
-    "d15a",
-    "d15b",
-    "d16a",
-    "d16b",
-    "d17a",
-    "d17b",
-    "d18a",
-    "d18b",
-    "d19a",
-    "d19b",
-]
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "4.0.32", features = ["derive"] }
+itertools = "0.10.5"
+regex = "1.7.0"
+
+[profile.test]
+opt-level = 3
+lto = true
+
+[profile.release]
+opt-level = 3
+lto = true
