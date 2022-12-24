@@ -1,8 +1,7 @@
 use itertools::Itertools;
-use memoize::memoize;
 use regex::Regex;
+use std::collections::HashSet;
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 struct Blueprint {
     id: usize,
     ore_robot: usize,
@@ -11,18 +10,22 @@ struct Blueprint {
     geode_robot: (usize, usize),
 }
 
-#[memoize]
 fn recurse(
     ore: usize,
     clay: usize,
     obsidian: usize,
     robots: (usize, usize, usize, usize),
     remaining: usize,
-    blueprint: Blueprint,
+    blueprint: &Blueprint,
+    cache: &mut HashSet<(usize, usize, usize, (usize, usize, usize, usize), usize)>,
 ) -> usize {
     if remaining == 0 {
         return 0;
     }
+    if cache.contains(&(ore, clay, obsidian, robots, remaining)) {
+        return 0;
+    }
+    cache.insert((ore, clay, obsidian, robots, remaining));
     let mut geodes = 0;
     if ore >= blueprint.geode_robot.0 && obsidian >= blueprint.geode_robot.1 {
         geodes = geodes.max(recurse(
@@ -32,6 +35,7 @@ fn recurse(
             (robots.0, robots.1, robots.2, robots.3 + 1),
             remaining - 1,
             blueprint,
+            cache,
         ));
         return geodes + robots.3;
     }
@@ -46,6 +50,7 @@ fn recurse(
             (robots.0, robots.1, robots.2 + 1, robots.3),
             remaining - 1,
             blueprint,
+            cache,
         ));
     }
     if ore >= blueprint.clay_robot && robots.1 < blueprint.obsidian_robot.1 {
@@ -56,6 +61,7 @@ fn recurse(
             (robots.0, robots.1 + 1, robots.2, robots.3),
             remaining - 1,
             blueprint,
+            cache,
         ));
     }
     if ore >= blueprint.ore_robot
@@ -71,6 +77,7 @@ fn recurse(
             (robots.0 + 1, robots.1, robots.2, robots.3),
             remaining - 1,
             blueprint,
+            cache,
         ));
     }
     geodes = geodes.max(recurse(
@@ -80,6 +87,7 @@ fn recurse(
         robots,
         remaining - 1,
         blueprint,
+        cache,
     ));
     geodes + robots.3
 }
@@ -105,7 +113,8 @@ fn main() {
         "{}",
         blueprints
             .iter()
-            .map(|&blueprint| blueprint.id * recurse(0, 0, 0, (1, 0, 0, 0), 24, blueprint))
+            .map(|blueprint| blueprint.id
+                * recurse(0, 0, 0, (1, 0, 0, 0), 24, blueprint, &mut HashSet::new()))
             .sum::<usize>()
     );
 }
