@@ -14,10 +14,7 @@ fn main() {
         blocked_tiles.insert((x, 0));
     }
 
-    let mut instructions = include_str!("input.txt")
-        .chars()
-        .filter(|&char| char != '\n')
-        .cycle();
+    let mut instructions = include_str!("input.txt").trim_end().chars().cycle();
 
     let mut dx;
     let mut fallen_rocks = 0;
