@@ -55,19 +55,20 @@ pub fn p2(input: &str) -> String {
     let sensors = get_sensors(input);
     for sensor in &sensors {
         let border_radius = sensor.radius + 1;
-        for x in -border_radius..=border_radius {
-            'outer: for y in [-(border_radius - x).abs(), (border_radius - x).abs()] {
-                let (nx, ny) = (sensor.sensor.0 + x, sensor.sensor.1 + y);
-                if !(0..=4000000).contains(&nx) || !(0..=4000000).contains(&ny) {
-                    continue;
-                }
+        for x in (sensor.sensor.0 - border_radius).clamp(0, 4000000)
+            ..=(sensor.sensor.0 + border_radius).clamp(0, 4000000)
+        {
+            let left = border_radius - (x - sensor.sensor.0).abs();
+            'outer: for y in [
+                (sensor.sensor.1 - left).clamp(0, 4000000),
+                (sensor.sensor.1 + left).clamp(0, 4000000),
+            ] {
                 for sensor in &sensors {
-                    if (nx - sensor.sensor.0).abs() + (ny - sensor.sensor.1).abs() <= sensor.radius
-                    {
+                    if (x - sensor.sensor.0).abs() + (y - sensor.sensor.1).abs() <= sensor.radius {
                         continue 'outer;
                     }
                 }
-                return format!("{}", 4000000 * nx + ny);
+                return format!("{}", 4000000 * x + y);
             }
         }
     }
