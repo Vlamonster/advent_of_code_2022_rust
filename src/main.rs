@@ -5,7 +5,7 @@ mod solutions;
 
 type Solution = fn(&str) -> String;
 
-const SOLUTIONS: [[Solution; 2]; 14] = [
+const SOLUTIONS: [[Solution; 2]; 15] = [
     [solutions::d01::p1, solutions::d01::p2],
     [solutions::d02::p1, solutions::d02::p2],
     [solutions::d03::p1, solutions::d03::p2],
@@ -20,6 +20,7 @@ const SOLUTIONS: [[Solution; 2]; 14] = [
     [solutions::d12::p1, solutions::d12::p2],
     [solutions::d13::p1, solutions::d13::p2],
     [solutions::d14::p1, solutions::d14::p2],
+    [solutions::d15::p1, solutions::d15::p2],
 ];
 
 #[derive(Parser, Debug)]
