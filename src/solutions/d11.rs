@@ -1,6 +1,6 @@
-use crate::solutions::d11::Operation::{Add, Mul, Square};
 use itertools::Itertools;
 use num::Integer;
+use Operation::{Add, Mul, Square};
 
 enum Operation {
     Square,

@@ -1,7 +1,7 @@
-use crate::solutions::d13::Node::{Array, Number};
 use itertools::Itertools;
 use std::cmp::Ordering;
 use std::str::Chars;
+use Node::{Array, Number};
 
 #[derive(Debug, PartialEq, Eq)]
 enum Node {

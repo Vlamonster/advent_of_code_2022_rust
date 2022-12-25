@@ -1,5 +1,5 @@
-use crate::solutions::d09::Motion::{Down, Left, Right, Up};
 use std::collections::HashSet;
+use Motion::{Down, Left, Right, Up};
 
 enum Motion {
     Up(isize),
