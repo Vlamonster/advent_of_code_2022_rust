@@ -1,19 +1,22 @@
-#![allow(unused)]
-
 use clap::Parser;
-use itertools::Itertools;
 use std::fs;
 
 mod solutions;
 
 type Solution = fn(&str) -> String;
 
-const SOLUTIONS: [[Solution; 2]; 5] = [
+const SOLUTIONS: [[Solution; 2]; 11] = [
     [solutions::d01::p1, solutions::d01::p2],
     [solutions::d02::p1, solutions::d02::p2],
     [solutions::d03::p1, solutions::d03::p2],
     [solutions::d04::p1, solutions::d04::p2],
     [solutions::d05::p1, solutions::d05::p2],
+    [solutions::d06::p1, solutions::d06::p2],
+    [solutions::d07::p1, solutions::d07::p2],
+    [solutions::d08::p1, solutions::d08::p2],
+    [solutions::d09::p1, solutions::d09::p2],
+    [solutions::d10::p1, solutions::d10::p2],
+    [solutions::d11::p1, solutions::d11::p2],
 ];
 
 #[derive(Parser, Debug)]
