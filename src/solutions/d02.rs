@@ -20,7 +20,7 @@ pub fn p1(input: &str) -> String {
 pub fn p2(input: &str) -> String {
     input
         .lines()
-        .map(|game| match game{
+        .map(|game| match game {
             "A X" => 3,
             "A Y" => 1 + 3,
             "A Z" => 2 + 6,

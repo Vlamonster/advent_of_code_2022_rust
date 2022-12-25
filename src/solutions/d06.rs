@@ -1,23 +1,29 @@
-use std::collections::HashSet;
+use std::collections::VecDeque;
+
+fn find_first_position(s: &str, window_size: usize) -> usize {
+    let mut window = VecDeque::new();
+    let mut rolling_hash = 0usize;
+
+    for (i, c) in s.chars().map(|char| char as u8).enumerate() {
+        window.push_back(c);
+        rolling_hash ^= 1 << (c - b'a');
+        if i >= window_size {
+            let removed = window.pop_front().unwrap();
+            rolling_hash ^= 1 << (removed - b'a');
+            if rolling_hash.count_ones() as usize == window_size {
+                return i + 1;
+            }
+        }
+    }
+    unreachable!()
+}
 
 pub fn p1(input: &str) -> String {
-    input
-        .as_bytes()
-        .windows(4)
-        .position(|window| HashSet::<&u8>::from_iter(window).len() == 4)
-        .unwrap()
-        .wrapping_add(4)
-        .to_string()
+    find_first_position(input, 4).to_string()
 }
 
 pub fn p2(input: &str) -> String {
-    input
-        .as_bytes()
-        .windows(14)
-        .position(|window| HashSet::<&u8>::from_iter(window).len() == 14)
-        .unwrap()
-        .wrapping_add(14)
-        .to_string()
+    find_first_position(input, 14).to_string()
 }
 
 #[test]
