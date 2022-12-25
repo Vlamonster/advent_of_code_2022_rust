@@ -11,7 +11,7 @@ cargo run --release -- 1 1
 cargo run --release -- 1 2
 
 # Run the solution with path to input file (day must be specified).
-cargo run --release -- 1 -i inputs/d01_example.txt
+cargo run --release -- 1 -i /inputs/d01_example.txt
 
 # If you would like to make changes, you can verify they are correct.
 cargo test
