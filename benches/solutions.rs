@@ -1,5 +1,5 @@
 use advent_of_code_2022_rust::{
-    d01, d02, d03, d04, d05, d06, d07, d08, d09, d10, d11, d12, d13, d14, d15,
+    d01, d02, d03, d04, d05, d06, d07, d08, d09, d10, d11, d12, d13, d14, d15, d20,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
@@ -183,8 +183,21 @@ fn d15b(c: &mut Criterion) {
     });
 }
 
+fn d20a(c: &mut Criterion) {
+    c.bench_function("d20a", |b| {
+        b.iter(|| d20::p1(black_box(include_str!("../inputs/d20.txt"))))
+    });
+}
+
+fn d20b(c: &mut Criterion) {
+    c.bench_function("d20b", |b| {
+        b.iter(|| d20::p2(black_box(include_str!("../inputs/d20.txt"))))
+    });
+}
+
 criterion_group!(
     benches, d01a, d01b, d02a, d02b, d03a, d03b, d04a, d04b, d05a, d05b, d06a, d06b, d07a, d07b,
-    d08a, d08b, d09a, d09b, d10a, d10b, d11a, d11b, d12a, d12b, d13a, d13b, d14a, d14b, d15a, d15b
+    d08a, d08b, d09a, d09b, d10a, d10b, d11a, d11b, d12a, d12b, d13a, d13b, d14a, d14b, d15a, d15b,
+    d20a, d20b
 );
 criterion_main!(benches);
